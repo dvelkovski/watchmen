@@ -1,0 +1,16 @@
+title: standard
+templateScript: /watchmen/templates/pages/home.ftl
+renderType: freemarker
+dialog: watchmen:pages/home
+visible: true
+
+areas:
+  navigation:
+    createAreaNode: false
+    renderType: freemarker
+    templateScript: /watchmen/templates/pages/areas/navigation.ftl
+    type: noComponent
+  main:
+    availableComponents:
+      public-planner:
+        id: watchmen:components/calendar/public-planner

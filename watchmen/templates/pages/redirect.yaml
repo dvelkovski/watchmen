@@ -1,0 +1,16 @@
+title: redirect
+templateScript: /watchmen/templates/pages/home.ftl
+renderType: freemarker
+dialog: watchmen:pages/home
+visible: true
+subtype: overview
+areas:
+  navigation:
+    createAreaNode: false
+    renderType: freemarker
+    templateScript: /watchmen/templates/pages/areas/navigation.ftl
+    type: noComponent
+  main:
+    availableComponents:
+      json-beautifier:
+        id: watchmen:components/json-beautifier

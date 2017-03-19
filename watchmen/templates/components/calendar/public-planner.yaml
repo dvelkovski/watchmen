@@ -1,0 +1,3 @@
+templateScript: /watchmen/templates/components/calendar/public-planner.ftl
+renderType: freemarker
+dialog: watchmen:components/calendar/public-planner
