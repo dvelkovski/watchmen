@@ -32,7 +32,7 @@
             <div class="modal-inner">
                 [@textField name="eventTitle" id="eventTitle" label="Event title" hint="Enter event title" type="text"/]
                 [@textField name="eventStartDate" id="eventStartDate" label="Event start date" class="datePicker" hint="Enter event start date" type="text"/]
-                [@textField name="eventEndDate" id="eventEndDate" label="Event start date" class="datePicker" hint="Enter event end date" type="text"/]
+                [@textField name="eventEndDate" id="eventEndDate" label="Event end date" class="datePicker" hint="Enter event end date" type="text"/]
                 [@selectField name="category" id="eventCategory" label="Category" options=categoriesCM hint="asd" propValue="name" propLabel="displayName" attributes=['color']/]
             </div>
             <div class="modal-footer">
@@ -51,13 +51,18 @@
             </div>
             <div class="modal-inner">
                 <input type="hidden" value="" id="existingEventNodeName">
+                <input type="hidden" value="" id="existingEventId">
                 [@textField name="eventTitle" id="existingEventTitle" label="Event title" hint="Enter event title" type="text"/]
                 [@textField name="eventStartDate" id="existingEventStartDate" label="Event start date" class="datePicker" hint="Enter event start date" type="text"/]
-                [@textField name="eventEndDate" id="existingEventEndDate" label="Event start date" class="datePicker" hint="Enter event end date" type="text"/]
+                [@textField name="eventEndDate" id="existingEventEndDate" label="Event end date" class="datePicker" hint="Enter event end date" type="text"/]
                 [@selectField name="category" id="existingEventCategory" label="Category" options=categoriesCM  propValue="name" propLabel="displayName" attributes=['color']/]
             </div>
             <div class="modal-footer">
-                <p class="text-right"><button class="btn btn-flat btn-brand waves-attach waves-button waves-effect" data-dismiss="modal" type="button">Close</button><button class="btn btn-flat btn-brand waves-attach waves-button waves-effect" data-dismiss="modal" id="updateEventFromCal" type="button">OK</button></p>
+                <p class="text-right">
+                    <button class="btn btn-flat btn-brand waves-attach waves-button waves-effect" data-dismiss="modal" type="button">Close</button>
+                    <button class="btn btn-flat btn-brand waves-attach waves-button waves-effect" data-dismiss="modal" id="updateEventFromCal" type="button">OK</button>
+                    <button class="btn btn-flat btn-brand waves-attach waves-button waves-effect" data-dismiss="modal" id="removeEvent" type="button">Remove event</button>
+                </p>
             </div>
         </div>
     </div>

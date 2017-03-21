@@ -25,13 +25,48 @@ $(document).ready(function() {
             $("#doc_create_new_event").modal("show");
         },
         eventClick: function(calEvent, jsEvent, view) {
+
             $("#doc_update_event").modal("show");
             updateTextField($existingEventStartDate, moment(calEvent.start).format('YYYY-MM-DD'));
             updateTextField($existingEventEndDate, moment(calEvent.end).format('YYYY-MM-DD'));
             updateTextField($existingEventTitle, calEvent.title);
             updateTextField($existingEventCategory, calEvent.category);
             $("#existingEventNodeName").val(calEvent.nodeName);
+            $("#existingEventId").val(calEvent._id);
         }
+    });
+    //remove event
+    $("#removeEvent").click(function(){
+        var nodeName = $("#existingEventNodeName").val();
+        var eventID = $("#existingEventId").val();
+        var path = $urlSettings.val();
+        var contextPath = $urlSettings.data("contextPath");
+
+        $.ajax
+
+        ({
+            url: '/magnoliaAuthor/.rest/nodes/v1/website' + path + "/"+ EVENTS_NODE_NAME + "/" + nodeName,
+            data: JSON.stringify({
+                "name": nodeName,
+                "type": "mgnl:contentNode",
+                "path": path + "/" + EVENTS_NODE_NAME +"/" + nodeName
+            }),
+            type: 'DELETE',
+            contentType: 'application/json',
+            success: function()
+            {
+                calendar.fullCalendar('removeEvents',eventID);
+               $(".snackbar").snackbar({
+                    alive: 6000,
+                    content: "<div class='aaa'>Event is removed</div>"
+               });
+
+
+            },
+            error: function(error){
+                alert(error.responseText);
+            }
+        });
     });
     //update event
     $("#updateEventFromCal").click(function(){
@@ -46,52 +81,18 @@ $(document).ready(function() {
             data: JSON.stringify({
                 "name": nodeName,
                 "type": "mgnl:contentNode",
-
                 "path": path + "/" + EVENTS_NODE_NAME +"/" + nodeName,
-                "property": [
-                    {
-                        "name": "startDate",
-                        "type": "Date",
-                        "multiple": false,
-                        "value": [
-                            moment($existingEventStartDate.val())
-                        ]
-                    },
-                    {
-                        "name": "endDate",
-                        "type": "Date",
-                        "multiple": false,
-                        "value": [
-                            moment($existingEventEndDate.val())
-                        ]
-                    },
-                    {
-                        "name": "category",
-                        "type": "String",
-                        "multiple": false,
-                        "value": [
-                            $existingEventCategory.val()
-                        ]
-                    },
-                    {
-                        "name": "title",
-                        "type": "String",
-                        "multiple": false,
-                        "value": [
-                            $existingEventTitle.val()
-                        ]
-                    }
-                ]
+                "property":buildEventProperties($existingEventStartDate.val(),$existingEventEndDate.val(), $existingEventCategory.val(), $existingEventTitle.val())
             }),
             type: 'POST',
             contentType: 'application/json',
             success: function()
             {
-                var event={id:1 , title: $eventTitle.val(), start:  moment($eventEndDate.val()), color:$('#eventCategory option:selected').data('color')};
+                var event={id:1 , title: $existingEventTitle.val(), start:  moment($existingEventStartDate.val()), end:  moment($existingEventEndDate.val()), color:$('#existingEventCategory option:selected').data('color')};
                 calendar.fullCalendar( 'renderEvent', event, true);
                 $(".snackbar").snackbar({
                     alive: 6000,
-                    content: "<div class='aaa'>success</div>"
+                    content: "<div class='aaa'>Event is updated</div>"
                 });
 
 
@@ -109,54 +110,19 @@ $(document).ready(function() {
         var contextPath = $urlSettings.data("context-path");
         console.log('/magnoliaAuthor/.rest/nodes/v1/website/' + path + "/"+ EVENTS_NODE_NAME);
         $.ajax
-
         ({
             url: '/magnoliaAuthor/.rest/nodes/v1/website' + path + "/"+ EVENTS_NODE_NAME,
             data: JSON.stringify({
                 "name": nodeName,
                 "type": "mgnl:contentNode",
-
                 "path": path + "/" + EVENTS_NODE_NAME +"/" + nodeName,
-                "property": [
-                    {
-                        "name": "startDate",
-                        "type": "Date",
-                        "multiple": false,
-                        "value": [
-                            moment($eventStartDate.val())
-                        ]
-                    },
-                    {
-                        "name": "endDate",
-                        "type": "Date",
-                        "multiple": false,
-                        "value": [
-                            moment($eventEndDate.val())
-                        ]
-                    },
-                    {
-                        "name": "category",
-                        "type": "String",
-                        "multiple": false,
-                        "value": [
-                            $eventCategory.val()
-                        ]
-                    },
-                    {
-                        "name": "title",
-                        "type": "String",
-                        "multiple": false,
-                        "value": [
-                            $eventTitle.val()
-                        ]
-                    }
-                ]
+                "property": buildEventProperties($eventStartDate.val(), $eventEndDate.val(), $eventCategory.val(), $eventTitle.val())
             }),
             type: 'PUT',
             contentType: 'application/json',
             success: function()
             {
-                var event={id:1 , title: $eventTitle.val(), start:  moment($eventEndDate.val()), color:$('#eventCategory option:selected').data('color')};
+                var event={id:1 , title: $eventTitle.val(), start:  moment($eventStartDate.val()), end: moment($eventEndDate.val()), color:$('#eventCategory option:selected').data('color')};
                 calendar.fullCalendar( 'renderEvent', event, true);
                 $(".snackbar").snackbar({
                     alive: 6000,
@@ -202,4 +168,33 @@ function buildEventSourceOptions(){
 function updateTextField($field, value){
     $field.val(value);
     $field.trigger("change");
+}
+function buildEventProperties(startDateVal, endDateVal, eventCategoryVal, eventTitleVal){
+    var props = [
+        {
+            "name": "startDate",
+            "type": "Date",
+            "multiple": false,
+            "value": [startDateVal]
+        },
+        {
+            "name": "endDate",
+            "type": "Date",
+            "multiple": false,
+            "value": [endDateVal]
+        },
+        {
+            "name": "category",
+            "type": "String",
+            "multiple": false,
+            "value": [eventCategoryVal]
+        },
+        {
+            "name": "title",
+            "type": "String",
+            "multiple": false,
+            "value": [eventTitleVal]
+        }
+    ]
+    return props;
 }
